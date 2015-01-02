@@ -1,15 +1,9 @@
 package cn.ac.ict.activityrecorder;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
-import android.os.Bundle;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,7 +13,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
+public class MainActivity extends ActionBarActivity {
     private final String dirName = "ActivityRecorder";// 目录名
     private final String timeFileName = "ActivityTime.txt";// 活动时间文件名
     private final String typeFileName = "ActivityType.txt";// 活动类型文件名
@@ -46,14 +46,14 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-        spinnerActivity = (Spinner) findViewById(R.id.spinnerActivity);
-        btnAddActivity = (Button) findViewById(R.id.btnAddActivity);
-        btnStart = (Button) findViewById(R.id.btnStart);
-        lblStatus = (TextView) findViewById(R.id.lblStatus);
+        spinnerActivity = (Spinner) findViewById(R.id.spinner_activity);
+        btnAddActivity = (Button) findViewById(R.id.button_activity_add);
+        btnStart = (Button) findViewById(R.id.button_start);
+        lblStatus = (TextView) findViewById(R.id.text_status);
         lblStatus.setText("");
         fillSpinner();
-        btnAddActivity.setOnClickListener(new AddActiviyButtonClick());
-        btnStart.setOnClickListener(new StartActiviyButtonClick());
+        btnAddActivity.setOnClickListener(new Add_ButtonClick());
+        btnStart.setOnClickListener(new Start_ButtonClick());
 
         // 初使化
         curActivity = fileUtils.GetCurrentActivityName();
@@ -62,46 +62,36 @@ public class MainActivity extends Activity {
             if (index != -1) {
                 spinnerActivity.setSelection(index);// 设置默认值
                 btnStart.setText(R.string.end);
-                lblStatus.setText(curActivity + "中...");
+                lblStatus.setText(curActivity + getString(R.string.ing));
             }
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
     private void fillSpinner() {
         arrActivity = fileUtils.getAllActivityType();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, arrActivity);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_checked);
         spinnerActivity.setAdapter(adapter);
 
     }
 
-    class StartActiviyButtonClick implements OnClickListener {
+    class Start_ButtonClick implements OnClickListener {
 
         @Override
         public void onClick(View arg0) {
             if (arrActivity == null || arrActivity.size() == 0) {
                 new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("没有活动类型，请先添加!")
+                        .setTitle(R.string.hint_no_activity)
                         .setIcon(android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("确定", null).show();
+                        .setPositiveButton(R.string.ok, null).show();
                 return;
             }
             if (curActivity == null || curActivity.equals("")) {// 当前没有活动在执行，则开始
                 curActivity = spinnerActivity.getSelectedItem().toString();
                 SaveData("start");
                 btnStart.setText(R.string.end);
-                lblStatus.setText(curActivity + "中...");
+                lblStatus.setText(curActivity + getString(R.string.ing));
 
             } else {// 当前有活动在执行，则停止
                 SaveData("stop");
@@ -125,17 +115,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    class AddActiviyButtonClick implements OnClickListener {
+    class Add_ButtonClick implements OnClickListener {
 
         @Override
         public void onClick(View v) {
             LayoutInflater factory = LayoutInflater.from(MainActivity.this);// 提示框
             final View view = factory.inflate(R.layout.activity_add, null);
             final EditText edit = (EditText) view
-                    .findViewById(R.id.txtaddactivityname);// 获得输入框对象
+                    .findViewById(R.id.edit_activity_name_add);// 获得输入框对象
 
             new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(R.string.inputactivityname) // 提示框标题
+                    .setTitle(R.string.input_activity_name) // 提示框标题
                     .setView(view)
                     .setPositiveButton(
                             R.string.ok,// 提示框的两个按钮
