@@ -3,10 +3,9 @@ package cn.ac.ict.activityrecorder;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private final String dirName = "ActivityRecorder";// 目录名
     private final String timeFileName = "ActivityTime.txt";// 活动时间文件名
     private final String typeFileName = "ActivityType.txt";// 活动类型文件名
@@ -42,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
     private void init() {
         try {
             fileUtils = new FileUtils(dirName, timeFileName, typeFileName);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -76,7 +75,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    class Start_ButtonClick implements OnClickListener {
+    class Start_ButtonClick implements View.OnClickListener {
 
         @Override
         public void onClick(View arg0) {
@@ -104,8 +103,7 @@ public class MainActivity extends ActionBarActivity {
 
         // 保存数据
         private void SaveData(String status) {
-            String time = new SimpleDateFormat("yyyyMMddHHmmss",
-                    Locale.getDefault()).format(new Date());
+            String time = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
             String msg = curActivity + "," + status + "," + time;
             try {
                 fileUtils.appendLine(msg);
@@ -115,14 +113,13 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    class Add_ButtonClick implements OnClickListener {
+    class Add_ButtonClick implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             LayoutInflater factory = LayoutInflater.from(MainActivity.this);// 提示框
             final View view = factory.inflate(R.layout.activity_add, null);
-            final EditText edit = (EditText) view
-                    .findViewById(R.id.edit_activity_name_add);// 获得输入框对象
+            final EditText edit = (EditText) view.findViewById(R.id.edit_activity_name_add);// 获得输入框对象
 
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(R.string.input_activity_name) // 提示框标题

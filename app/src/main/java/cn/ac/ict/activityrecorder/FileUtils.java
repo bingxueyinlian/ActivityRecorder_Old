@@ -1,5 +1,8 @@
 package cn.ac.ict.activityrecorder;
 
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,14 +13,11 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
-import android.os.Environment;
-import android.util.Log;
-
 public class FileUtils {
     private String dirName = null;
     private String timeFileName = null;
     private String typeFileName = null;
-    final private String TAG = "FileUtils";
+    final private String TAG = FileUtils.class.getSimpleName();
     final private String Encoding = "UTF-8";
 
     public FileUtils(String dirName, String timeFileName, String typeFileName)
